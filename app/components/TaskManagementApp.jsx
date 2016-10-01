@@ -47,18 +47,21 @@ class TaskManagementApp extends Component {
   }
 
   handleAddTask(task) {
-    this.setState({
-      todos: [
-        ...this.state.todos,
-        {
-          completed: 0,
-          description: task.taskDesc,
-          priority: task.priority,
-          target_date: task.taskTargetDate,
-          uuid: uuid(),
-        }
-      ]
-    });
+    var that = this;
+    TaskAPI.setTask(task).then(response => {
+      that.setState({
+        tasks: [
+          ...that.state.tasks,
+          {
+            completed: 0,
+            description: response.taskDesc,
+            priority: parseInt(response.priority),
+            target_date: response.taskTargetDate,
+            uuid: response.uuid,
+          }
+        ]
+      });
+    })
   }
 
   handleToggle(id) {
@@ -148,6 +151,7 @@ class TaskManagementApp extends Component {
         task.target_date = this.state.taskTargetDateToEdit;
         task.priority = parseInt(this.state.taskPriorityToEdit);
 
+        TaskAPI.patchTask(task);
         this.onModalClose();
         return task;
       }

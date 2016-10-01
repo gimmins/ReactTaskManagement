@@ -12,7 +12,7 @@ class TaskList extends Component {
     }
     return tasks.map(task => {
       return (
-        <Task key={task.id} {...task}
+        <Task key={task.uuid} {...task}
               onToggle={this.props.onToggle}
               onToggleEdit={this.props.onToggleEdit}
         />

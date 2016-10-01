@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import uuid from 'node-uuid';
 
 class AddTask extends Component {
 
@@ -34,6 +35,7 @@ class AddTask extends Component {
     e.preventDefault();
 
     let task = {
+      uuid: uuid(),
       taskTargetDate: this.state.taskTargetDate,
       priority: this.state.taskPriority,
       taskDesc: this.state.taskDesc,
