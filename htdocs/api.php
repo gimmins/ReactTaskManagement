@@ -10,7 +10,7 @@ use JSONFormatter;
 use Database;
 
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS');
+header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 // get the HTTP method, path and body of the request
@@ -28,12 +28,10 @@ switch ($method) {
 	$tasks_builder->toJson($res);
     break;
   case 'POST':
-    $res = $tasks_controller->postAction($request, $input);
-	$tasks_builder->toJson($res);
+    $res = $tasks_controller->setAction($request, $input);
     break;
   case 'PATCH':
-    $res = $tasks_controller->patchAction($request, $input);
-	$tasks_builder->toJson($res);
+    $res = $tasks_controller->patchAction($request[0], $request[1], $input);
     break;
 }
 

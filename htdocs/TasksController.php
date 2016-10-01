@@ -27,21 +27,30 @@ class TasksController
 	
     // Sanity check
     if (is_array($request) && strcmp($table, 'tasks') == 0) {
-      $sql = 'INSERT INTO (task_uuid, task_description, task_targetdate, task_priority, task_completed)';
-      // $values = 'VALUES $body'
-      // $result = $this->db->query($sql);
+      $task_uuid = $body['uuid'];
+	  $task_description = $body['taskDesc'];
+	  $task_targetdate = $body['taskTargetDate'];
+	  $task_priority = $body['priority'];
+	  
+      $sql = 'INSERT INTO `tasks` (`uuid`, `description`, `target_date`, `priority`, `completed`)';
+      $values = " VALUES ('$task_uuid', '$task_description', '$task_targetdate', $task_priority, 0)";
+	  
+	  $result = $this->db->query($sql . $values);
     }
   }
 
   // /tasks/{task_id} UPDATE
-  public function patchAction($request, $body) {
+  public function patchAction($table, $id, $body) {
+  	$task_description = $body['description'];
+	$task_targetdate = $body['target_date'];
+	$task_priority = $body['priority'];
+	  
     // Sanity check
-    if (is_array($request) && strcmp($request[0].equals(), 'tasks')) {
-      $task_id = intval($request[1].trim());
-      // $sql = 'UPDATE tasks';
-      // $set = 'SET task_description=$body, task_targetdate=$body, $task_priority=$body, $task_completed'
-      // $where = 'WHERE task_id=$task_id'
-      // $result = $this->db->query($sql);
+    if (strcmp($table, 'tasks') == 0) {
+      $sql = 'UPDATE `tasks` ';
+      $set = " SET `description`='$task_description', `target_date`='$task_targetdate', `priority`=$task_priority";
+      $where = " WHERE `id`=$id";
+      $result = $this->db->query($sql . $set . $where);
     }
   }
 }
