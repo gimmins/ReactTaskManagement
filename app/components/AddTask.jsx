@@ -49,7 +49,7 @@ class AddTask extends Component {
       }
       this.props.onAddTask(task);
     } else {
-      this.refs.todoText.focus();
+      this.refs.taskText.focus();
     }
   }
 
@@ -67,7 +67,7 @@ class AddTask extends Component {
     return (
       <div className="container__footer">
         <form onSubmit={this.handleSubmit.bind(this)}>
-          <input type="text" ref="todoText" placeholder="Please enter a task" value={this.state.taskDesc} onChange={this.onDescChange.bind(this)}/>
+          <input type="text" ref="taskText" placeholder="Please enter a task" value={this.state.taskDesc} onChange={this.onDescChange.bind(this)}/>
           <label>
             Target Date
             <input type="date" ref="targetDate" name="targetDate" value={this.state.targetDate} onChange={this.onDateChange.bind(this)}/>

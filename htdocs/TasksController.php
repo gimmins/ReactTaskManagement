@@ -44,11 +44,12 @@ class TasksController
   	$task_description = $body['description'];
 	$task_targetdate = $body['target_date'];
 	$task_priority = $body['priority'];
+	$task_completed = $body['completed'];
 	  
     // Sanity check
     if (strcmp($table, 'tasks') == 0) {
       $sql = 'UPDATE `tasks` ';
-      $set = " SET `description`='$task_description', `target_date`='$task_targetdate', `priority`=$task_priority";
+      $set = " SET `description`='$task_description', `target_date`='$task_targetdate', `priority`=$task_priority, `completed`=$task_completed";
       $where = " WHERE `id`=$id";
       $result = $this->db->query($sql . $set . $where);
     }

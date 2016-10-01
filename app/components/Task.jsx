@@ -41,10 +41,21 @@ class Task extends Component {
     )
   }
 
+  renderEditButton() {
+    var id = this.props.uuid;
+    return (
+      <div className="large-2 columns">
+        <button data-open="exampleModal1" className="button edit-button" onClick={this.onEditButtonClick.bind(this, id)}>
+          Edit
+        </button>
+      </div>
+    );
+  }
+
   render() {
     var {completed} = this.props;
     var id = this.props.uuid;
-    var taskClassName = completed ? 'large-10 columns todo todo-completed' : 'large-10 columns todo';
+    var taskClassName = completed ? 'large-10 columns task task-completed' : 'large-10 columns task';
 
     return (
       <div className="row">
@@ -54,11 +65,7 @@ class Task extends Component {
           </div>
           {this.renderTaskDesc()}
         </div>
-        <div className="large-2 columns">
-          <button data-open="exampleModal1" className="button edit-button" onClick={this.onEditButtonClick.bind(this, id)}>
-            Edit
-          </button>
-        </div>
+        {!completed ? this.renderEditButton() : ''}
       </div>
     )
   }

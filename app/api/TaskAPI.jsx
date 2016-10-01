@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import axios from 'axios';
+import moment from 'moment';
 
 function setTask (task) {
   var taskToPost = task;
@@ -33,7 +34,6 @@ function patchTask(task) {
 
   return axios.patch(`http://localhost:8888/api.php/tasks/${taskId}`, task)
   .then(response => {
-    console.log(response);
     if (response.status === 200) {
       return taskToPatch;
     } else {
@@ -42,37 +42,49 @@ function patchTask(task) {
   })
 }
 
-// function filterTodos (todos, showCompleted, searchText) {
-  // var filteredTodos = todos;
-  //
-  // // Filter by showCompleted
-  // filteredTodos = filteredTodos.filter((todo) => {
-  //   return !todo.completed || showCompleted;
-  // });
-  //
-  // // Filter by searchText
-  // // filteredTodos = filteredTodos.filter((todo) => {
-  // //   var text = todo.text.toLowerCase();
-  // //   return searchText.length === 0 || text.indexOf(searchText) > -1;
-  // // });
-  //
-  // // Sort todos with non-completed first
-  // filteredTodos.sort((a, b) => {
-  //   if (!a.completed && b.completed) {
-  //     return -1;
-  //   } else if (a.completed && !b.completed) {
-  //     return 1;
-  //   } else {
-  //     return 0;
-  //   }
-  // });
-  //
-  // return filteredTodos;
-// }
+function filterTasks (tasks, showCompleted) {
+  var filteredTasks = tasks;
+
+  // Filter by showCompleted
+  filteredTasks = filteredTasks.filter((task) => {
+    return !task.completed || showCompleted;
+  });
+
+  return filteredTasks;
+}
+
+function sortByPriority (tasks, showCompleted, orderIn) {
+  var filteredTasks = filterTasks(tasks, 0);
+  var completedTasks = tasks.filter(task => {
+    return task.completed;
+  });
+
+  var sortedTasks = _.orderBy(filteredTasks, ['priority'], [orderIn]);
+  return [...completedTasks, ...sortedTasks]
+}
+
+function sortByDate (tasks, showCompleted, orderIn) {
+  var filteredTasks = filterTasks(tasks, 0);
+  var completedTasks = tasks.filter((task) => {
+    return task.completed;
+  });
+
+  // Add unix timestamp for easy sorting
+  var filteredTasks = filteredTasks.map(task => {
+    task.unix = parseInt(moment(task.target_date, "YYYY-MM-DD HH:mm:ss").format("X"));
+    return task;
+  })
+
+  var sortedTasks = _.orderBy(filteredTasks, ['unix'], [orderIn]);
+
+  return [...completedTasks, ...sortedTasks]
+}
 
 export {
   setTask,
   getTasks,
   patchTask,
-  // filterTodos,
+  filterTasks,
+  sortByPriority,
+  sortByDate,
 };

@@ -15,6 +15,8 @@ class TaskManagementApp extends Component {
     super();
 
     this.state = {
+      orderDateIn: 'asc',
+      orderPriorityIn: 'asc',
       idToEdit: '',
       showEditor: false,
       showCompleted: false,
@@ -67,7 +69,8 @@ class TaskManagementApp extends Component {
   handleToggle(id) {
     var updatedTasks = this.state.tasks.map((task) => {
       if (task.uuid === id) {
-        task.completed = !task.completed;
+        task.completed = !task.completed == true ? 1 : 0;
+        TaskAPI.patchTask(task);
       }
       return task;
     });
@@ -81,7 +84,7 @@ class TaskManagementApp extends Component {
     });
   }
 
-  toggleCompleted(e) {
+  toggleShowCompleted(e) {
     this.setState({
       showCompleted: this.refs.showCompleted.checked,
     });
@@ -198,38 +201,45 @@ class TaskManagementApp extends Component {
   }
 
   sortByPriority() {
-    var taskstosort = this.state.todos.slice();
-    var newsortedtasks = _.orderBy(taskstosort, ['priority'], ['asc']);
+    var {tasks, showCompleted} = this.state;
+    var orderIn = this.state.orderPriorityIn === 'asc' ? 'desc' : 'asc';
+    var sortedTasks = TaskAPI.sortByPriority(tasks, showCompleted, orderIn);
 
     this.setState({
-      todos: newsortedtasks,
+      tasks: sortedTasks,
+      orderPriorityIn: orderIn,
     })
   }
 
   sortByTargetDate() {
-    var taskstosort = this.state.todos.slice();
-    var newsortedtasks = _.orderBy(taskstosort, ['targetDate'], ['asc']);
+    var {tasks, showCompleted} = this.state;
+    var orderIn = this.state.orderDateIn === 'asc' ? 'desc' : 'asc'
+    var sortedTasks = TaskAPI.sortByDate(tasks, showCompleted, orderIn);
 
     this.setState({
-      todos: newsortedtasks,
+      tasks: sortedTasks,
+      orderDateIn: orderIn,
     })
   }
 
   renderSortButtons() {
+    var priorityArrowDirection = this.state.orderPriorityIn === 'asc' ? 'up-arrow' : 'up-arrow rotate';
+    var dateArrowDirection = this.state.orderDateIn === 'asc' ? 'up-arrow' : 'up-arrow rotate';
     return (
       <div className="row">
         <div className="large-6 columns">
-          <button className="button expanded" onClick={this.sortByPriority}>Sort by priority</button>
+          <button className="button expanded" onClick={this.sortByPriority.bind(this)}>Sort by priority <span><img className={priorityArrowDirection} src="./up-arrow.png"/></span></button>
         </div>
         <div className="large-6 columns">
-          <button className="button expanded" onClick={this.sortByTargetDate}>Sort by target date</button>
+          <button className="button expanded" onClick={this.sortByTargetDate.bind(this)}>Sort by target date <span><img className={dateArrowDirection} src="./up-arrow.png"/></span></button>
         </div>
       </div>
     )
   }
 
   render() {
-    var {tasks, showCompleted, searchText} = this.state;
+    var {tasks, showCompleted} = this.state;
+    var filteredTasks = TaskAPI.filterTasks(tasks, showCompleted);
 
     return (
       <div>
@@ -240,10 +250,10 @@ class TaskManagementApp extends Component {
             <div className="container">
               {this.renderSortButtons()}
               <label>
-                <input type="checkbox" ref="showCompleted" onChange={this.toggleCompleted}/>
-                Show completed todos
+                <input type="checkbox" ref="showCompleted" onChange={this.toggleShowCompleted.bind(this)}/>
+                Show completed tasks
               </label>
-              <TaskList tasks={tasks} onToggle={this.handleToggle.bind(this)} onToggleEdit={this.handleEdit}/>
+              <TaskList tasks={filteredTasks} onToggle={this.handleToggle.bind(this)} onToggleEdit={this.handleEdit}/>
               <AddTask onAddTask={this.handleAddTask}/>
             </div>
           </div>
