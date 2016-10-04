@@ -5,7 +5,7 @@ import moment from 'moment';
 function setTask (task) {
   var taskToPost = task;
 
-  return axios.post('http://localhost:8888/api.php/tasks', task)
+  return axios.post('http://www.gimmins.com/api.php/tasks', task)
   .then(response => {
     if (response.status === 200) {
       return taskToPost;
@@ -19,7 +19,7 @@ function setTask (task) {
 }
 
 function getTasks () {
-  return axios.get('http://localhost:8888/api.php/tasks')
+  return axios.get('http://www.gimmins.com/api.php/tasks')
   .then(response => {
     return $.isArray(response.data) ? response.data : [];
   })
@@ -32,7 +32,7 @@ function patchTask(task) {
   var taskToPatch = task;
   var taskId = task.id;
 
-  return axios.patch(`http://localhost:8888/api.php/tasks/${taskId}`, task)
+  return axios.patch(`http://www.gimmins.com/api.php/tasks/${taskId}`, task)
   .then(response => {
     if (response.status === 200) {
       return taskToPatch;
